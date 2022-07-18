@@ -8,16 +8,24 @@
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="entry-form" id="entry">
+    <div class="navbar" id="navbar"></div>
+    <div class="goal-form">
     <form>
-        <label for="goal">Enter Daily Goal</label>
-        <input class="text" id="goal" name="goal" type="text">
+        <label for="goal">Enter  Goal</label>
+        <input class="text" id="goal" title="goal" type="text">
         <label for="due-date">Due Date</label>
-        <input class="date" id="date-picker" name="due-date" type="date"> 
-        <button type="button" onclick="addGoal();">Add</button>
+        <input class="date" id="date-picker" title="due-date" type="date"> 
+        <button type="button" onclick="addGoal();">Add Goal</button>
     </form>
     </div>
-    <div class="goal-list" id="goal-list"></div>
+    <div class="daily-container">
+        <div class="today" id="today-task">
+
+        </div>
+        <div class="next" id="next-task"></div>
+    </div>
+    <div class="goal-lists" id="goal-lists"></div>
+
 
     
     <script src="goalsetter.js"></script>
