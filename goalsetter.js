@@ -62,7 +62,7 @@ function removeTask(idToDelete){
         });
         goal.tasks = tasks;
     });
-    //saveGoals();  // saves JSON file.
+    saveGoals();  // saves JSON file.
 }
       
 
