@@ -52,17 +52,16 @@ function removeGoal(idToDelete) {
 //removes task from array
 function removeTask(idToDelete){
     goals.forEach(function (goal){
-        goal.tasks.filter(function (task) {
-            if(task.taskid === idToDelete){ //checks for correct id for task
-                return false;  //if id matches, it will be removed
+        tasks = goal.tasks.filter(function (task){
+            if (task.taskid == idToDelete){
+                return false;
             }
             else{
-                return true; //otherwise, remaining entries enter into array
+                return true;
             }
-        })
-        
-    })
-
+        });
+        goal.tasks = tasks;
+    });
     //saveGoals();  // saves JSON file.
 }
       
@@ -195,7 +194,7 @@ function listTasks(task){
     //lists task items
     const taskItem = document.createElement('div');
     taskItem.innerText = task.name + " Due: " + task.dueDate;
-    taskItem.id = task.taskid;
+    taskItem.id = task.taskid + 'item';
 
     //returns task item line back to previous task.
     return taskItem;
@@ -231,15 +230,14 @@ function addGoal(){
     const goal = document.getElementById('goal').value;  //pulls goal from text box
     const dueDate = document.getElementById('date-picker').value; //pulls due date from date picker
     createGoal(goal, dueDate); //add goal to goal list.
-        displayNavBar(); //displays ne wiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiiij-
-    displayDueToday(goals);
-    displayTasks();
+    displayNavBar(); //displays navbar with new tab
+    displayDueToday(goals); //displays updated goal daily list
+    displayTasks(); //displays updated task lists 
 }
 
 //add task to a goal
 function addTask(event){
     const addButton = event.target;
-    console.log(addButton);
     const id = addButton.id;
     const task = document.getElementById(id + 'text').value;
     const taskDueDate = document.getElementById(id +'dueDatePicker').value;
@@ -248,7 +246,7 @@ function addTask(event){
     displayDueToday(goals);
     displayTasks();
 }
-
+//deletes a goal
 function deleteGoal(event){
     const deleteButton = event.target;
     const idToDelete = deleteButton.id;
@@ -258,9 +256,11 @@ function deleteGoal(event){
     displayTasks();
 }
 
+//deletes a task
 function deleteTask(event){
     const deleteButton = event.target;
     const idToDelete = deleteButton.id;
+
     removeTask(idToDelete);
     displayDueToday(goals);
     displayTasks();
