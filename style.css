@@ -3,7 +3,11 @@
 
 }
 
-.daily-container{
-    display: flex;
+.tabs{
+    cursor: pointer;
+}
+
+.section{
+    display: none;
 }
 

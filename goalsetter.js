@@ -2,16 +2,23 @@
 //if data is in JSON file, pull from JSON file.
 //Otherwise, use default array.
 
-let goals;
+let goals = [];
+let loadElement;
 const today = new Date().getFullYear() + '-' + (new Date().getMonth() + 1) + '-' + new Date().getDate(); //establishes "today"
 const savedGoals = JSON.parse(localStorage.getItem('goals')); //calls on JSON file "goals" if it exists
       if (Array.isArray(savedGoals)){
         goals = savedGoals; //if file exists, data put into goals variable
+           
+      }
+
+      if (goals.length == 0){
+        loadElement = document.getElementById("new-goallist");
       }
       else{
-       goals = [{name: 'Create task', dueDate: '2022-12-31', measured: false,id: 'id1', tasks: [{name: "Complete Task", dueDate: today, taskid: 'id3'}] }, 
-       {name: 'Create task', dueDate: '2022-12-31', measured: false, id: 'id2', tasks: [{name: "Complete Task", dueDate: today, taskid: 'id4'}]}]; //if not, default data is entered instead.
+        loadElement = document.getElementById("upcominglist");
       }
+      loadElement.style.display = 'block';
+      
 
 
 //creates an entry into the goal list.
@@ -35,10 +42,12 @@ function createTask(task, dueDate, idCheck){
 }
 
 
+
+
 //removes item from goals list.
 function removeGoal(idToDelete) {
     goals = goals.filter(function (goal) {
-        if (goal.id === idToDelete){ //checks if goal id matches
+        if (goal.id == idToDelete){ //checks if goal id matches
             return false; //if it does, item will be removed
         }
         else{
@@ -80,12 +89,16 @@ function displayNavBar(){
     const navElement = document.getElementById('navbar');
     eraseElement(navElement); //erases everything inside 'navbar'
 
-    const label = "Upcoming Tasks"; //labels upcoming tasks tab
-    const id = "upcoming"
+    let label = "Upcoming Tasks"; //labels upcoming tasks tab
+    let id = "upcoming";
     navElement.appendChild(createTabButton(label, id)); // adds Up[]
     goals.forEach(function (goalItem) {
         navElement.appendChild(createTabButton(goalItem.name, goalItem.id)); //calls creates TabButton for each goal
     })
+    label = "+";
+    id = "new-goal";
+    navElement.appendChild(createTabButton(label, id));
+    
 }
 
 
@@ -94,11 +107,21 @@ function createTabButton(label, id){
 
     //creates each tab
     const tab = document.createElement('div');
-    const button = document.createElement('button');
-    button.innerText = label;
-    button.type = 'button';
-    button.id = id + 'tab';
-    tab.appendChild(button);
+    tab.innerText = label;
+    tab.id = id + 'tab';
+    tab.class = "tabs";
+    tab.addEventListener("click", function() {
+        const idMatch = id;
+        const sections = document.querySelectorAll('.section');
+        console.log(sections);
+        sections.forEach(function(section){
+            section.style.display = "none";
+            if (section.id == idMatch + 'list'){
+                section.style.display = "block";
+            }
+        });
+    });
+
     return tab;
 } 
 
@@ -108,9 +131,12 @@ function displayTasks(){
     eraseElement(element); //erases the internal HTML
 
     goals.forEach(function (goal){
-        element.appendChild(createTaskForm(goal.id)); //creates form for tasks
+        const listElement = document.createElement('div')
+        listElement.classList.add('section');
+        listElement.id = goal.id + 'list';
+        listElement.appendChild(createTaskForm(goal.id)); //creates form for tasks
         const listDue = "Due: " + goal.dueDate; //Goal's Due Date
-        element.append(listDue);
+        listElement.append(listDue);
 
         //Delete Goal button
         const deleteGoalButton = document.createElement('button');
@@ -120,12 +146,11 @@ function displayTasks(){
         deleteGoalButton.style = "margin-left: 12px";
         deleteGoalButton.type = 'button';
         deleteGoalButton.class = 'delete';
-        element.appendChild(deleteGoalButton);
+        listElement.appendChild(deleteGoalButton);
 
         //Goal's Task List
         const goalList = document.createElement('div');
-        goalList.id = goal.id + 'list';
-        goal.tasks.forEach(function (task){
+            goal.tasks.forEach(function (task){
             const taskLine = document.createElement('div')
             taskLine.appendChild(listTasks(task)); //adds task info to line
 
@@ -141,7 +166,8 @@ function displayTasks(){
 
             goalList.appendChild(taskLine); //adds task line to list
         })
-        element.appendChild(goalList);    //adds full list
+        listElement.appendChild(goalList);  
+        element.appendChild(listElement);  //adds full list
     })
 }
 
@@ -212,7 +238,8 @@ function displayDueToday(goalsObj){
             taskName.innerText = taskItem.name;
             element.appendChild(taskName);  //if task is due today, it is added to daily task list.
         }
-    })})
+    })
+})
 }
 
 function eraseElement(element){
@@ -254,6 +281,11 @@ function deleteGoal(event){
     displayNavBar();
     displayDueToday(goals);
     displayTasks();
+    if (goals.length == 0)
+    {
+        const element = document.getElementById(goal-form);
+        element.class += ' active';
+    }
 }
 
 //deletes a task
